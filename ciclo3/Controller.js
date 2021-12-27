@@ -64,7 +64,7 @@ app.post('/pedidos', async(req,res)=>{
     });
 });
 
-app.get('/itempedidos', async(req,res)=>{
+app.post('/itempedidos', async(req,res)=>{
     await itempedido.create(
         req.body
     ).then(function(){
