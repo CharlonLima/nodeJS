@@ -138,6 +138,32 @@ app.get('/servico/:id', async(req,res)=>{
     });
 });
 
+// app.get('/atualizaservico', async(req,res)=>{
+//     await servico.findByPk(1)
+//     .then(serv =>{
+//         serv.nome = 'HTML/CSS';
+//         serv.descricao = 'Páginas estáticas e dinamicas estilizadas';
+//         serv.save();
+//         return res.json({serv})
+//     });
+// });
+
+app.put('/atualizaservico', async(req,res)=>{
+        await servico.update(req.body,{
+            where:{id: req.body.id}
+        }).then(function(){
+            return res.json({
+                error: false,
+                message: "Serviço foi alterado com sucesso!"
+            })
+        }).catch(function(erro){
+            res.status(400).json({
+                error: true,
+                message: "Erro na alteração do serviço."
+        });
+    });
+});
+
 let port=process.env.PORT || 3001;
 
 app.listen(port,(req,res)=>{
