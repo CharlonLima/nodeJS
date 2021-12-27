@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      data: {
+      dataPedido: {
         type: Sequelize.DATEONLY
       },
       createdAt: {

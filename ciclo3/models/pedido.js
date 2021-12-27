@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Pedido.init({
+    ClienteId: DataTypes.INTEGER,
     dataPedido: DataTypes.DATEONLY
   }, {
     sequelize,
