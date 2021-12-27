@@ -80,6 +80,64 @@ app.post('/itempedidos', async(req,res)=>{
     });
 });
 
+app.get('/listaservicos', async(req,res)=>{
+    await servico.findAll({
+        //raw: true
+        order: [['nome', 'ASC']]
+    }).then(function(servicos){
+        res.json({servicos})
+    });
+});
+
+app.get('/listaclientes', async(req,res)=>{
+    await cliente.findAll({
+        order: [['clienteDesde', 'ASC']]
+    }).then(function(clientes){
+        res.json({clientes})
+    });
+});
+
+app.get('/listaitempedidos', async(req,res)=>{
+    await itempedido.findAll({
+        order:[['valor', 'DESC']]
+    }).then(function(itemspedidos){
+        res.json({itemspedidos})
+    });
+});
+
+app.get('/ofertaservicos', async(req,res)=>{
+    await servico.count('id').then(function(servicos){
+        res.json({servicos});
+    });
+});
+
+app.get('/qtdcliente', async(req,res)=>{
+    await cliente.count('id').then(function(clientes){
+        res.json({clientes});
+    });
+});
+
+app.get('/qtdpedido', async(req,res)=>{
+    await pedido.count('id').then(function(pedidos){
+        res.json({pedidos});
+    });
+});
+
+app.get('/servico/:id', async(req,res)=>{
+    await servico.findByPk(req.params.id)
+    .then(serv =>{
+        return res.json({
+            error: false,
+            serv
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível se conectar!"
+        });
+    });
+});
+
 let port=process.env.PORT || 3001;
 
 app.listen(port,(req,res)=>{
