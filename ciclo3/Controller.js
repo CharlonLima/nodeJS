@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 
+const {Sequelize} = require('./models');
+
 const models = require('./models');
 
 const app=express();
@@ -137,6 +139,21 @@ app.get('/servico/:id', async(req,res)=>{
         });
     });
 });
+//não funciona
+// app.get('/pedidoscliente/:id', async(req,res)=>{
+//     await pedido.findByPk(req.params.id, {include:[{all:true}]})
+//     .then(pedi=>{
+//         return res.json({
+//             error: false,
+//             pedi
+//         });
+//     }).catch(function(erro){
+//         return res.status(400).json({
+//             error: true,
+//             message: "Erro não foi possível se conectar!"
+//         });
+//     });
+// });
 
 // app.get('/atualizaservico', async(req,res)=>{
 //     await servico.findByPk(1)
@@ -160,6 +177,77 @@ app.put('/atualizaservico', async(req,res)=>{
             res.status(400).json({
                 error: true,
                 message: "Erro na alteração do serviço."
+        });
+    });
+});
+//aula12
+app.get('/pedidos/:id', async(req,res)=>{
+    await pedido.findByPk(req.params.id,{include:[{all: true}]})
+    .then(ped=>{
+        return res.json({ped});
+    });
+});
+
+app.get('/infoclientes', async(req,res)=>{
+    await pedido.findByPk(req.body.id,{include:[{all:true}]})
+    .then(ser=>{
+        return res.json({ser});
+    });
+});
+
+app.put('/pedidos/:id/editaritem', async(req,res)=>{
+    const item={
+        quantidade: req.body.quantidade,
+        valor: req.body.valor
+    };//! significa não se não encontrar id
+    if(!await pedido.findByPk(req.params.id)){
+        return res.status(400).json({//params captura do link
+            error: true,
+            message: 'Pedido não foi encontrado.'
+        });
+    };                          //captura do corpo da requisiçao
+    if(!await servico.findByPk(req.body.ServicoId)){
+        return res.status(400).json({
+            error: true,
+            message: 'Serviço não foi encontrado.'
+        })
+    };
+    await itempedido.update(item,{
+        where: Sequelize.and({ServicoId:req.body.ServicoId},
+            {PedidoId:req.params.id})
+    }).then(function(itens){
+        return res.json({
+            error: false,
+            message: 'Pedido alterado com sucesso!',
+            itens
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível alterar.'
+        });
+    });
+});
+
+app.put('/clientes/:id/editarcliente', async(req,res)=>{
+    if(!await cliente.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Cliente não encontrado!'
+        });
+    };
+    await cliente.update(req.body, {
+        where: {id:req.params.id}
+    }).then(function(client){
+        return res.json({
+            error: false,
+            message: 'Cliente alterado com sucesso!',
+            client
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível alterar o cliente.'
         });
     });
 });
