@@ -252,6 +252,32 @@ app.put('/clientes/:id/editarcliente', async(req,res)=>{
     });
 });
 
+//aula 13
+
+app.get('/listaclientes', async(req,res)=>{
+    await cliente.findAll({
+        raw: true
+    }).then(function(clientes){
+        res.json({clientes})
+    });
+});
+
+app.get('/excluircliente/:id', async(req,res)=>{
+    await cliente.destroy({
+        where: {id: req.params.id}
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'Cliente foi excluído com sucesso!'
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Erro ao excluir o cliente.'
+        });
+    });
+});
+
 let port=process.env.PORT || 3001;
 
 app.listen(port,(req,res)=>{
