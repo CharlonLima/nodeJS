@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Compra.init({
+    ClienteId: DataTypes.INTEGER,
     data: DataTypes.DATEONLY
   }, {
     sequelize,

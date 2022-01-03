@@ -14,6 +14,10 @@ let itempedido = models.ItemPedido;
 let pedido = models.Pedido;
 let servico = models.Servico;
 
+let compra = models.Compra;
+let itemcompra = models.ItemCompra;
+let produto = models.Produto;
+
 app.get('/', function(req,res){
     res.send('Olá mundo!')
 });
@@ -139,31 +143,6 @@ app.get('/servico/:id', async(req,res)=>{
         });
     });
 });
-//não funciona
-// app.get('/pedidoscliente/:id', async(req,res)=>{
-//     await pedido.findByPk(req.params.id, {include:[{all:true}]})
-//     .then(pedi=>{
-//         return res.json({
-//             error: false,
-//             pedi
-//         });
-//     }).catch(function(erro){
-//         return res.status(400).json({
-//             error: true,
-//             message: "Erro não foi possível se conectar!"
-//         });
-//     });
-// });
-
-// app.get('/atualizaservico', async(req,res)=>{
-//     await servico.findByPk(1)
-//     .then(serv =>{
-//         serv.nome = 'HTML/CSS';
-//         serv.descricao = 'Páginas estáticas e dinamicas estilizadas';
-//         serv.save();
-//         return res.json({serv})
-//     });
-// });
 
 app.put('/atualizaservico', async(req,res)=>{
         await servico.update(req.body,{
@@ -180,6 +159,7 @@ app.put('/atualizaservico', async(req,res)=>{
         });
     });
 });
+
 //aula12
 app.get('/pedidos/:id', async(req,res)=>{
     await pedido.findByPk(req.params.id,{include:[{all: true}]})
@@ -274,6 +254,232 @@ app.get('/excluircliente/:id', async(req,res)=>{
         return res.status(400).json({
             error: true,
             message: 'Erro ao excluir o cliente.'
+        });
+    });
+});
+
+//DESAFIO NODE JS
+
+app.post('/produtos', async(req,res)=>{
+    await produto.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            message: 'O produto foi criado com sucesso!'
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível se conectar.'
+        })
+    });
+});
+
+app.post('/compras', async(req,res)=>{
+    await compra.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            message: 'A compra foi realizada com sucesso!'
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Foi impossível se conectar!'
+        })
+    });
+});
+
+app.post('/itemcompras', async(req,res)=>{
+    await itemcompra.create(
+        req.body
+    ).then(function(){
+        return res.json({
+            error: false,
+            message: 'O item compra foi inserido com sucesso!'
+        })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível inserir o item compra.'
+        })
+    });
+});
+
+app.get('/listarcompras', async(req,res)=>{
+    await compra.findAll({
+        order: [['id', 'ASC']]
+    }).then(function(compras){
+        res.json({compras})
+    });
+});
+
+app.get('/listarItemCompra', async(req,res)=>{
+    await itemcompra.findAll({
+        order: [['valor', 'ASC']]
+    }).then(function(itens){
+        res.json({itens})
+    });
+});
+
+app.get('/listarProdutos', async(req,res)=>{
+    await produto.findAll({
+        order: [['id', 'ASC']]
+    }).then(function(produtos){
+        res.json({produtos})
+    });
+});
+
+app.put('/atualizarCompra', async(req,res)=>{
+    if(!await compra.findByPk(req.body.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Compra não existe!'
+        });
+    };
+    await compra.update(req.body, {
+        where: {id: req.body.id}
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'Compra alterada com sucesso!'
+        })
+    }).catch(function(erro){
+        res.status(400).json({
+            error: true,
+            message: 'Não foi possível alterar a compra'
+        });
+    });
+});
+
+app.put('/atualizarItemCompra/:id/editarItem', async(req,res)=>{
+    const itemCompra = {
+        quantidade: req.body.quantidade,
+        valor: req.body.valor
+    };
+    if(!await compra.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Compra não existe!'
+        });
+    };
+    if(!await produto.findByPk(req.body.ProdutoId)){
+        return res.status(400).json({
+            error: true,
+            message: 'Produto não existe!'
+        });
+    };
+    await itemcompra.update(itemCompra, {
+        where: Sequelize.and({CompraId: req.params.id},
+        {ProdutoId: req.body.ProdutoId})
+    }).then(function(itens){
+        return res.json({
+            error: false,
+            message: 'Item compra alterado com sucesso!',
+            itens
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível alterar item compra'
+        });
+    });
+});
+
+app.put('/atualizarProduto', async(req,res)=>{
+    if(!await produto.findByPk(req.body.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'O produto não existe!'
+        });
+    };
+    await produto.update(req.body, {
+        where: {id: req.body.id}
+    }).then(function(produto){
+        return res.json({
+            error: false,
+            message: 'Produto alterado com sucesso!',
+            produto
+        })
+    }).catch(function(erro){
+        res.status(400).json({
+            error: true,
+            message: 'Não foi possível alterar o produto.'
+        });
+    });
+});
+
+app.get('/excluirCompra', async(req,res)=>{
+    if(!await compra.findByPk(req.body.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'A compra não existe!'
+        });
+    };
+    await compra.destroy({
+        where: {id: req.body.id}
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'Compra excluída com sucesso!'
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível excluir o cliente.'
+        });
+    });
+});
+
+app.get('/excluirItemCompra/:id/excluir', async(req,res)=>{
+    if(!await compra.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'A compra não existe!'
+        });
+    };
+    if(!await produto.findByPk(req.body.ProdutoId)){
+        return res.status(400).json({
+            error: true,
+            message: 'O produto não existe!'
+        });
+    };
+    await itemcompra.destroy({
+        where: Sequelize.and({CompraId: req.params.id}, 
+        {ProdutoId: req.body.ProdutoId})
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'O item compra foi excluído com sucesso!'
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível excluir o item compra.'
+        });
+    });
+});
+
+app.get('/excluirProduto', async(req,res)=>{
+    if(!await produto.findByPk(req.body.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'O produto não existe'
+        });
+    };
+    await produto.destroy({
+        where: {id: req.body.id}
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'O produto foi excluído com sucesso!'
+        });
+    }).catch(function(erro){
+            return res.status(400).json({
+                error: true,
+                message: 'Não foi possível excluir o produto.'
         });
     });
 });
