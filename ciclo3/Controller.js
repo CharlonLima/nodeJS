@@ -308,6 +308,67 @@ app.post('/itemcompras', async(req,res)=>{
     });
 });
 
+// app.get('/servico/:id', async(req,res)=>{
+//     await servico.findByPk(req.params.id)
+//     .then(serv =>{
+//         return res.json({
+//             error: false,
+//             serv
+//         });
+//     }).catch(function(erro){
+//         return res.status(400).json({
+//             error: true,
+//             message: "Erro: não foi possível se conectar!"
+//         });
+//     });
+// });
+
+app.get('/consultar1produto/:id', async(req,res)=>{
+    if(!await produto.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'O produto não existe!'
+        });
+    };
+    await produto.findByPk(req.params.id)
+    .then(prod =>{
+        return res.json({
+            error: false,
+            prod
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível se conectar.'
+        });
+    });
+});
+
+// app.get('/pedidos/:id', async(req,res)=>{
+//     await pedido.findByPk(req.params.id,{include:[{all: true}]})
+//     .then(ped=>{
+//         return res.json({ped});
+//     });
+// });
+
+app.get('/consultarCompra/:id', async(req,res)=>{
+    if(!await compra.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'A compra não existe!'
+        });
+    };
+    await compra.findByPk(req.params.id, {include:[{all: true}]})
+    .then(compr =>{
+        return res.json({compr});
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível se conectar.'
+        });
+    });
+});
+
 app.get('/listarcompras', async(req,res)=>{
     await compra.findAll({
         order: [['id', 'ASC']]
