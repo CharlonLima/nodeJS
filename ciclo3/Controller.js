@@ -258,6 +258,28 @@ app.get('/excluircliente/:id', async(req,res)=>{
     });
 });
 
+//aula 5 de react
+
+app.get('/servico/:id/pedidos', async(req,res)=>{
+    await itempedido.findAll({
+        //where é uma condição que significa que o ServicoId
+        //tem que ser igual ao id passado no parametro da rota
+        //Se a condição for verdade então ele retorna todos os
+        //pedidos que tenha o id do serviço
+        where: {ServicoId:req.params.id}})
+    .then(item =>{
+        return res.json({
+            error: false,
+            item
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível se conectar!"
+        });
+    });
+});
+
 //DESAFIO NODE JS
 
 app.post('/produtos', async(req,res)=>{
