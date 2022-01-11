@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 // Importando as views que serão acessadas quando o usuário acessar a rota
 import { Home } from './views/Home';
 import { ListarClientes } from './views/Cliente/ListarClientes/';
-import { ListarPedidos } from './views/Pedido/ListarPedidos';
+import { ListarPedidos } from './views/Pedido/ListarPedidos/index.js';
+import {Item} from './views/Servico/Item/index.js';
 import { ListarServicos } from './views/Servico/ListarServicos';
 import { Menu } from './components/Menu';
 // Um ponto significa que o arquivo está no mesmo nivel, dois pontos significa que
@@ -20,8 +21,9 @@ function App() {
         {/* "/", "/listar-cliente", "/listar-pedido", "/listar-servico" São
         as rotas do front end, que por padrão fica na porta 3000 */}
           <Route exact path="/" component={Home}/>
+          <Route path="/listar-pedidos" component={ListarPedidos}/>
           <Route path="/listar-cliente" component={ListarClientes}/>
-          <Route path="/listar-pedido" component={ListarPedidos}/>
+          <Route path="/listar-pedido/:id" component={Item}/>
           <Route path="/listar-servico" component={ListarServicos}/>
         </Switch>
       </Router>

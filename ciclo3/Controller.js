@@ -111,6 +111,14 @@ app.get('/listaitempedidos', async(req,res)=>{
     });
 });
 
+app.get('/listapedidos', async(req,res)=>{
+    await pedido.findAll({
+        order:[["id", "DESC"]]
+    }).then(function(pedidos){
+        res.json({pedidos})
+    });
+});
+
 app.get('/ofertaservicos', async(req,res)=>{
     await servico.count('id').then(function(servicos){
         res.json({servicos});

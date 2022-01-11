@@ -1,5 +1,6 @@
 import axios, { Axios } from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Alert, Container } from "reactstrap";
 import { Table } from "reactstrap";
 import { api } from "../../../config";
@@ -64,7 +65,11 @@ export const ListarServicos = () => {
                             <td>{item.id}</td>
                             <td>{item.nome}</td>
                             <td>{item.descricao}</td>
-                            <td className="text-center/">Botão</td>
+                            <td className="text-center/">
+                                {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
+                                <Link to={"/listar-pedido/"+item.id} 
+                                className="btn btn-outline-primary btn-sm">Consultar</Link>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
