@@ -9,6 +9,8 @@ import { ListarPedidos } from './views/Pedido/ListarPedidos/index.js';
 import {Item} from './views/Servico/Item/index.js';
 import { ListarServicos } from './views/Servico/ListarServicos';
 import { Menu } from './components/Menu';
+import { Cadastrar } from './views/Servico/cadastrar/index.js';
+
 // Um ponto significa que o arquivo está no mesmo nivel, dois pontos significa que
 // tem que voltar um nível
 
@@ -25,6 +27,7 @@ function App() {
           <Route path="/listar-cliente" component={ListarClientes}/>
           <Route path="/listar-pedido/:id" component={Item}/>
           <Route path="/listar-servico" component={ListarServicos}/>
+          <Route path="/cadastrarservico" component={Cadastrar}/>
         </Switch>
       </Router>
     </div>

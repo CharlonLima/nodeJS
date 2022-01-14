@@ -20,7 +20,7 @@ export const ListarClientes = () => {
         await axios.get(api + "/listaclientes")
             .then((response) => {
                 console.log(response.data.clientes);
-                setData(response.data.clientes); 
+                setData(response.data.clientes);
                 // retorna item porque lá no controller react
                 // e no postman ciclo4 ele está retornando item
             }).catch(() => {
@@ -39,15 +39,19 @@ export const ListarClientes = () => {
     return (
         <div>
             <Container>
-                <div>
-                    <h1>Lista com Todos os Clientes</h1>
-                </div>
-                {/* Funciona como se fosse um if, 
+                <div className="d-flex">
+                    <div>
+                        <h1>Lista com Todos os Clientes</h1>
+                    </div>
+                    <div className="m-auto p-2">
+                        <Link to="/cadastrarCliente" className="btn btn-outline-primary btn-sm">Cadastrar Cliente</Link>
+                    </div>
+                    {/* Funciona como se fosse um if, 
                 se o status type for igual a error então execute o alert
                 se for falso que está sendo representado pelo dois pontos
                  execute o vazio ou seja nada */}
-                {status.type == 'error' ? <Alert color="danger"> {status.message} </Alert>:""}
-                
+                    {status.type == 'error' ? <Alert color="danger"> {status.message} </Alert> : ""}
+                </div>
             </Container>
             {/* striped é formatação de estilo da tabela */}
             <Table striped>
@@ -69,8 +73,8 @@ export const ListarClientes = () => {
                             <td>{clientes.uf}</td>
                             <td className="text-center/">
                                 {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
-                                <Link to={""} 
-                                className="btn btn-outline-primary btn-sm">Consultar</Link>
+                                <Link to={""}
+                                    className="btn btn-outline-primary btn-sm">Consultar</Link>
                             </td>
                         </tr>
                     ))}

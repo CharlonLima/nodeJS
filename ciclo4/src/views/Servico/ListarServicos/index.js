@@ -39,15 +39,19 @@ export const ListarServicos = () => {
     return (
         <div>
             <Container>
-                <div>
-                    <h1>Visualizar informações do serviço</h1>
-                </div>
-                {/* Funciona como se fosse um if, 
+                <div className="d-flex">
+                    <div>
+                        <h1>Visualizar informações do serviço</h1>
+                    </div>
+                    <div className="m-auto p-2">
+                        <Link to="/cadastrarservico" className="btn btn-outline-primary btn-sm">Cadastrar</Link>
+                    </div>
+                    {/* Funciona como se fosse um if, 
                 se o status type for igual a error então execute o alert
                 se for falso que está sendo representado pelo dois pontos
                  execute o vazio ou seja nada */}
-                {status.type == 'error' ? <Alert color="danger"> {status.message} </Alert>:""}
-                
+                    {status.type == 'error' ? <Alert color="danger"> {status.message} </Alert> : ""}
+                </div>
             </Container>
             {/* striped é formatação de estilo da tabela */}
             <Table striped>
@@ -67,8 +71,8 @@ export const ListarServicos = () => {
                             <td>{item.descricao}</td>
                             <td className="text-center/">
                                 {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
-                                <Link to={"/listar-pedido/"+item.id} 
-                                className="btn btn-outline-primary btn-sm">Consultar</Link>
+                                <Link to={"/listar-pedido/" + item.id}
+                                    className="btn btn-outline-primary btn-sm">Consultar</Link>
                             </td>
                         </tr>
                     ))}
