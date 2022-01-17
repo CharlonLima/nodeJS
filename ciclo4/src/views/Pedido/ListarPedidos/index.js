@@ -39,15 +39,19 @@ export const ListarPedidos = () => {
     return (
         <div>
             <Container>
+                <div className="d-flex">
                 <div>
                     <h1>Lista com Todos os Pedidos</h1>
+                </div>
+                <div className="m-auto p-2">
+                    <Link to="/cadastrarpedido" className="btn btn-outline-primary btn-sm">Cadastrar Pedido</Link>
                 </div>
                 {/* Funciona como se fosse um if, 
                 se o status type for igual a error então execute o alert
                 se for falso que está sendo representado pelo dois pontos
                  execute o vazio ou seja nada */}
                 {status.type == 'error' ? <Alert color="danger"> {status.message} </Alert>:""}
-                
+                </div>
             </Container>
             {/* striped é formatação de estilo da tabela */}
             <Table striped>
