@@ -5,9 +5,12 @@ import { useState } from "react/cjs/react.development";
 import { Container, Form, Button, Input, Label, FormGroup, Alert } from "reactstrap";
 import { api } from "../../../config";
 
-export const CadastrarCliente = () => {
+export const EditarCliente = (props) => {
     // objeto que recebe os dados, a variavel serviço recebe os dados e a variavel setServico
     // altera os dados
+
+    const [id, setId] = useState(props.match.params.id);
+
     const [cliente, setCliente] = useState({
         nome: '',
         endereco: '',
@@ -28,7 +31,7 @@ export const CadastrarCliente = () => {
         ...cliente, [e.target.name]: e.target.value
     });
 
-    const cadCliente = async e => {
+    const editCliente = async e => {
         // preventDefault não permite que as informações passadas no formulario
         // apareçam na barra de endereço
         e.preventDefault()
@@ -39,23 +42,19 @@ export const CadastrarCliente = () => {
             'Content-Type': 'application/json'
         }
         // "/servicos" é a rota igual está no controller
-        await axios.post(api + "/clientes", cliente, { headers })
-            .then((response) => {
-                //console.log(response.data.message);
-                if (response.data.error) {
-                    setStatus({
-                        type: 'error',
-                        message: response.data.message
-                    });
-                } else {
-                    setStatus({
-                        type: 'success',
-                        message: response.data.message
-                    });
-                }
-            }).catch(() => {
-                console.log("Erro: sem conexão com a API.");
-            });
+        await axios.put(api + "/clientes/" + id + "/editarcliente", cliente, { headers })
+            .then(() => {
+                setStatus({
+                    type: 'success',
+                    message: 'Cliente alterado com sucesso!'
+                })
+            })
+            .catch(() => {
+                setStatus({
+                    type: 'error',
+                    message: 'Erro: sem conexão com a API'
+                })
+            })
 
     }
 
@@ -63,17 +62,17 @@ export const CadastrarCliente = () => {
         <Container>
             <div className="d-flex">
                 <div className="m-auto p-2">
-                    <h1>Cadastrar Cliente</h1>
+                    <h1>Editar Cliente</h1>
                 </div>
                 <div className="p-2">
-                    <Link to="/listar-cliente" className="btn btn-outline-success btn-sm">Voltar para Clientes</Link>
+                    <Link to="/listar-cliente" className="btn btn-outline-success btn-sm">Clientes</Link>
                 </div>
             </div>
             <hr className="m-1" />
             {/* {status.type === 'error'} serve para mostrar a mensagem na tela se deu tudo certo ou se deu erro , funciona como um if */}
             {status.type === 'error' ? <Alert color="danger">{status.message}</Alert> : ""}
             {status.type === 'success' ? <Alert color="success">{status.message}</Alert> : ""}
-            <Form className="p-2" onSubmit={cadCliente}>
+            <Form className="p-2" onSubmit={editCliente}>
                 <FormGroup className="p-2">
                     <Label>Nome</Label>
                     {/* onChange vai capturar o valor quando o campo for alterado */}
@@ -103,7 +102,7 @@ export const CadastrarCliente = () => {
                     {/* onChange vai capturar o valor quando o campo for alterado */}
                     <Input name="clienteDesde" placeholder="Data cadastro do cliente" type="text" onChange={valorInput} />
                 </FormGroup>
-                <Button type="submit" outline color="success">Cadastrar</Button>
+                <Button type="submit" outline color="success">Atualizar</Button>
             </Form>
             <Form>
                 <Button type="submit" outline color="warning">Limpar Formulário</Button>

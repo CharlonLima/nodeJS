@@ -152,11 +152,27 @@ app.get('/servico/:id', async(req,res)=>{
     });
 });
 
-app.put('/atualizaservico', async(req,res)=>{
-        await servico.update(req.body,{
-            where:{id: req.body.id}
-        }).then(function(){
-            return res.json({
+// app.put('/atualizaservico', async(req,res)=>{
+//         await servico.update(req.body,{
+//             where:{id: req.body.id}
+//         }).then(function(){
+//             return res.json({
+//                 error: false,
+//                 message: "Serviço foi alterado com sucesso!"
+//             })
+//         }).catch(function(erro){
+//             res.status(400).json({
+//                 error: true,
+//                 message: "Erro na alteração do serviço."
+//         });
+//     });
+// });
+
+app.put('/atualizaservico/:id', async(req,res)=>{
+    await servico.update(req.body,{
+        where:{id: req.params.id}})
+        .then(function(){
+        return res.json({
                 error: false,
                 message: "Serviço foi alterado com sucesso!"
             })
@@ -168,12 +184,18 @@ app.put('/atualizaservico', async(req,res)=>{
     });
 });
 
+
 //aula12
 app.get('/pedidos/:id', async(req,res)=>{
     await pedido.findByPk(req.params.id,{include:[{all: true}]})
     .then(ped=>{
         return res.json({ped});
     });
+});
+
+app.get('/teste/:id', async(req,res)=>{
+    await pedido.findByPk(req.params.id, {include:[{all:true}]})
+    
 });
 
 app.get('/infoclientes', async(req,res)=>{
@@ -240,6 +262,29 @@ app.put('/clientes/:id/editarcliente', async(req,res)=>{
     });
 });
 
+app.put('/pedidos/:id/editarpedido', async(req,res)=>{
+    if(!await pedido.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Pedido não encontrado!'
+        });
+    };
+    await pedido.update(req.body, {
+        where: {id:req.params.id}
+    }).then(function(pedi){
+        return res.json({
+            error: false,
+            message: 'Pedido alterado com sucesso!',
+            pedi
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível alterar o pedido.'
+        });
+    });
+});
+
 //aula 13
 
 app.get('/listaclientes', async(req,res)=>{
@@ -266,6 +311,38 @@ app.get('/excluircliente/:id', async(req,res)=>{
     });
 });
 
+app.get('/excluirservico/:id', async(req,res)=>{
+    await servico.destroy({
+        where: {id: req.params.id}
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'Serviço excluído com sucesso!'
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Erro ao excluir o serviço.'
+        });
+    });
+});
+
+app.get('/excluirpedido/:id', async(req,res)=>{
+    await pedido.destroy({
+        where: {id: req.params.id}
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'O pedido foi excluído com sucesso!'
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Erro ao excluir o pedido.'
+        });
+    });
+});
+
 //aula 5 de react
 
 app.get('/servico/:id/pedidos', async(req,res)=>{
@@ -287,6 +364,7 @@ app.get('/servico/:id/pedidos', async(req,res)=>{
         });
     });
 });
+
 
 //DESAFIO NODE JS
 

@@ -1,3 +1,4 @@
+
 import axios, { Axios } from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -73,6 +74,9 @@ export const ListarServicos = () => {
                                 {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
                                 <Link to={"/listar-pedido/" + item.id}
                                     className="btn btn-outline-primary btn-sm">Consultar</Link>
+                                <Link to={"/editarServico/"+item.id} className="btn btn-outline-dark btn-sm">Editar</Link>    
+                                <Link to={"/excluirServico/"+item.id} className="btn btn-outline-danger btn-sm">Excluir</Link>
+
                             </td>
                         </tr>
                     ))}

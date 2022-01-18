@@ -62,7 +62,7 @@ export const CadastrarPedido = () => {
                     <h1>Cadastrar Pedido</h1>
                 </div>
                 <div className="p-2">
-                    <Link to="/listar-pedidos" className="btn btn-outline-sucess btn-sm">Pedidos</Link>
+                    <Link to="/listar-pedidos" className="btn btn-outline-success btn-sm">Voltar para Pedidos</Link>
                 </div>
             </div>
             <hr className="m-1" />

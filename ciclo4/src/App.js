@@ -12,6 +12,12 @@ import { Menu } from './components/Menu';
 import { Cadastrar } from './views/Servico/cadastrar/index.js';
 import { CadastrarCliente } from './views/Cliente/cadCliente';
 import { CadastrarPedido } from './views/Pedido/cadastrar';
+import { ExcluirServico } from './views/Servico/excluir';
+import { ExcluirCliente } from './views/Cliente/excluirCli';
+import { EditarCliente} from './views/Cliente/editCliente';
+import { EditarServico } from './views/Servico/editServico';
+import { ExcluirPedido } from './views/Pedido/excluirPedi';
+import { EditarPedido } from './views/Pedido/editPedido';
 
 
 // Um ponto significa que o arquivo está no mesmo nivel, dois pontos significa que
@@ -25,6 +31,7 @@ function App() {
         <Switch>
         {/* "/", "/listar-cliente", "/listar-pedido", "/listar-servico" São
         as rotas do front end, que por padrão fica na porta 3000 */}
+        {/* component é o nome da função que vc exportou e agora está importando */}
           <Route exact path="/" component={Home}/>
           <Route path="/listar-pedidos" component={ListarPedidos}/>
           <Route path="/listar-cliente" component={ListarClientes}/>
@@ -33,6 +40,12 @@ function App() {
           <Route path="/cadastrarservico" component={Cadastrar}/>
           <Route path="/CadastrarCliente" component={CadastrarCliente}/>
           <Route path="/cadastrarpedido" component={CadastrarPedido}/>
+          <Route path="/excluirServico/:id" component={ExcluirServico}/>
+          <Route path="/excluirCliente/:id" component={ExcluirCliente}/>
+          <Route path="/editarCliente/:id" component={EditarCliente}/>
+          <Route path="/editarServico/:id" component={EditarServico}/>
+          <Route path="/editarPedido/:id" component={EditarPedido}/>
+          <Route path="/excluirPedido/:id" component={ExcluirPedido}/>
         </Switch>
       </Router>
     </div>

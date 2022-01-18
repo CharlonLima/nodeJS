@@ -71,9 +71,8 @@ export const ListarPedidos = () => {
                             <td>{pedidos.ClienteId}</td>
                             <td>{pedidos.data}</td>
                             <td className="text-center/">
-                                {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
-                                <Link to={""} 
-                                className="btn btn-outline-primary btn-sm">Consultar</Link>
+                                <Link to={"/editarPedido/"+pedidos.id} className="btn btn-outline-dark btn-sm">Editar</Link>
+                                <Link to={"/excluirPedido/"+pedidos.id} className="btn btn-outline-danger btn-sm">Excluir</Link>
                             </td>
                         </tr>
                     ))}

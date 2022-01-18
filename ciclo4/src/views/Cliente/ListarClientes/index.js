@@ -59,8 +59,12 @@ export const ListarClientes = () => {
                     <tr>
                         <th>ID</th>
                         <th>Nome</th>
+                        <th>Endereço</th>
                         <th>Cidade</th>
-                        <th>UF</th>
+                        <th>Estado</th>
+                        <th>Nascimento</th>
+                        <th>Cliente Desde</th>
+                        <th>Ação</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,13 +72,19 @@ export const ListarClientes = () => {
                         // ServicoId, PedidoId, quantidade, valor para que ele retorne 
                         // deve estar escrito igual ele retorna no postman
                         <tr key={clientes.id}>
+                            <td>{clientes.id}</td>
                             <td>{clientes.nome}</td>
                             <td>{clientes.endereco}</td>
+                            <td>{clientes.cidade}</td>
                             <td>{clientes.uf}</td>
+                            <td>{clientes.nascimento}</td>
+                            <td>{clientes.clienteDesde}</td>
                             <td className="text-center/">
                                 {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
                                 <Link to={""}
                                     className="btn btn-outline-primary btn-sm">Consultar</Link>
+                                <Link to={"/editarCliente/"+clientes.id} className="btn btn-outline-dark btn-sm">Editar</Link>
+                                <Link to={"/excluirCliente/"+clientes.id} className="btn btn-outline-danger btn-sm">Excluir</Link>
                             </td>
                         </tr>
                     ))}

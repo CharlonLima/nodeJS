@@ -1,16 +1,19 @@
-import axios from "axios";
+import axios, { Axios } from "axios";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { useState } from "react/cjs/react.development";
 import { Container, Form, Button, Input, Label, FormGroup, Alert } from "reactstrap";
 import { api } from "../../../config";
 
-export const Cadastrar = () => {
+export const EditarPedido = (props) => {
     // objeto que recebe os dados, a variavel serviço recebe os dados e a variavel setServico
     // altera os dados
-    const [servico, setServico] = useState({
-        nome: '',
-        descricao: ''
+
+    const [id, setId] = useState(props.match.params.id);
+
+    const [pedido, setPedido] = useState({
+        data: '',
+        ClienteId: ''
     });
 
     // objeto para o tratamento de erros
@@ -19,39 +22,35 @@ export const Cadastrar = () => {
         message: ''
     });
 
-    const valorInput = e => setServico({
+    const valorInput = e => setPedido({
         // o servico vai ser composto pelo nome do campo e pelo valor do campo
-        ...servico, [e.target.name]: e.target.value
+        ...pedido, [e.target.name]: e.target.value
     });
 
-    const cadServico = async e => {
+    const editServico = async e => {
         // preventDefault não permite que as informações passadas no formulario
         // apareçam na barra de endereço
         e.preventDefault()
-        console.log(servico);
+        console.log(pedido);
 
         // const headers é conteudo no formato json
         const headers = {
             'Content-Type': 'application/json'
         }
         // "/servicos" é a rota igual está no controller
-        await axios.post(api + "/servicos", servico, { headers })
-            .then((response) => {
-                //console.log(response.data.message);
-                if (response.data.error) {
-                    setStatus({
-                        type: 'error',
-                        message: response.data.message
-                    });
-                } else {
-                    setStatus({
-                        type: 'success',
-                        message: response.data.message
-                    });
-                }
-            }).catch(() => {
-                console.log("Erro: sem conexão com a API.");
-            });
+        await axios.put(api + "/pedidos/" + id + "/editarpedido", pedido, { headers })
+            .then(() => {
+                setStatus({
+                    type: 'success',
+                    message: 'Pedido alterado com sucesso!'
+                })
+            })
+            .catch(() => {
+                setStatus({
+                    type: 'error',
+                    message: 'Erro: sem conexão com a API'
+                })
+            })
 
     }
 
@@ -59,27 +58,27 @@ export const Cadastrar = () => {
         <Container>
             <div className="d-flex">
                 <div className="m-auto p-2">
-                    <h1>Cadastrar Serviço</h1>
+                    <h1>Editar Pedido</h1>
                 </div>
                 <div className="p-2">
-                    <Link to="/listar-servico" className="btn btn-outline-success btn-sm">Voltar para Serviços</Link>
+                    <Link to="/listar-pedidos" className="btn btn-outline-success btn-sm">Voltar para Pedidos</Link>
                 </div>
             </div>
             <hr className="m-1" />
             {/* {status.type === 'error'} serve para mostrar a mensagem na tela se deu tudo certo ou se deu erro , funciona como um if */}
             {status.type === 'error' ? <Alert color="danger">{status.message}</Alert> : ""}
             {status.type === 'success' ? <Alert color="success">{status.message}</Alert> : ""}
-            <Form className="p-2" onSubmit={cadServico}>
+            <Form className="p-2" onSubmit={editServico}>
                 <FormGroup className="p-2">
-                    <Label>Nome</Label>
+                    <Label>Data do Pedido</Label>
                     {/* onChange vai capturar o valor quando o campo for alterado */}
-                    <Input name="nome" placeholder="Nome do serviço" type="text" onChange={valorInput} />
+                    <Input name="data" placeholder="Data do pedido" type="text" onChange={valorInput} />
                 </FormGroup>
                 <FormGroup className="p-2">
-                    <Label>Descrição</Label>
-                    <Input name="descricao" placeholder="Descrição do serviço" type="text" onChange={valorInput} />
+                    <Label>ID do Cliente</Label>
+                    <Input name="ClienteId" placeholder="Identificação do Cliente" type="text" onChange={valorInput} />
                 </FormGroup>
-                <Button type="submit" outline color="success">Cadastrar</Button>
+                <Button type="submit" outline color="success">Atualizar</Button>
             </Form>
             <Form>
                 <Button type="submit" outline color="warning">Limpar Formulário</Button>
