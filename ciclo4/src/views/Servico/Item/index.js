@@ -8,8 +8,8 @@ import { api } from "../../../config";
 // Tudo que for usado deve ser importado, quando começar a escrever a palavra
 // pressione enter e a importação da dependencia será feita automaticamente
 export const Item = (props) => {
-                    // propos indica a passagem de parametros. nesse caso é o id que é passado ao clicar no botaão
-                    console.log(props.match.params.id);
+    // propos indica a passagem de parametros. nesse caso é o id que é passado ao clicar no botaão
+    console.log(props.match.params.id);
 
     const [data, setData] = useState([]); //retorna uma lista por isso tem colcetes
     // data retorna os dados
@@ -26,10 +26,10 @@ export const Item = (props) => {
         // api é a porta http://localhost:3001 que foi definida no controller.js
         // e está sendo exportada na pasta config no arquivo index.js e importada
         //para cá. "/listaservicos" é o é o nome da rota que foi definido no controller.js
-        await axios.get(api + "/servico/"+id+"/pedidos")
+        await axios.get(api + "/servico/" + id + "/pedidos")
             .then((response) => {
                 console.log(response.data.item);
-                setData(response.data.item); 
+                setData(response.data.item);
                 // retorna item porque lá no controller react
                 // e no postman ciclo4 ele está retornando item
             }).catch(() => {
@@ -48,15 +48,19 @@ export const Item = (props) => {
     return (
         <div>
             <Container>
-                <div>
-                    <h1>Pedidos do serviço</h1>
-                </div>
-                {/* Funciona como se fosse um if, 
+                <div className="d-flex">
+                    <div>
+                        <h1>Pedidos do serviço</h1>
+                    </div>
+                    <div className="m-auto p-2">
+                        <Link to="/listar-servico" className="btn btn-outline-primary btn-sm">Voltar para Serviços</Link>
+                    </div>
+                    {/* Funciona como se fosse um if, 
                 se o status type for igual a error então execute o alert
                 se for falso que está sendo representado pelo dois pontos
                  execute o vazio ou seja nada */}
-                {status.type == 'error' ? <Alert color="danger"> {status.message} </Alert>:""}
-                
+                    {status.type == 'error' ? <Alert color="danger"> {status.message} </Alert> : ""}
+                </div>
             </Container>
             {/* striped é formatação de estilo da tabela */}
             <Table striped>
@@ -78,8 +82,8 @@ export const Item = (props) => {
                             <td>{item.valor}</td>
                             <td className="text-center/">
                                 {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
-                                <Link to={""} 
-                                className="btn btn-outline-primary btn-sm">Consultar</Link>
+                                <Link to={""}
+                                    className="btn btn-outline-primary btn-sm">Consultar</Link>
                             </td>
                         </tr>
                     ))}

@@ -147,6 +147,26 @@ app.get('/qtdpedido', async(req,res)=>{
     });
 });
 
+app.get('/cliente/:id', async(req,res)=>{
+    await cliente.findAll({
+        //where é uma condição que significa que o ServicoId
+        //tem que ser igual ao id passado no parametro da rota
+        //Se a condição for verdade então ele retorna todos os
+        //pedidos que tenha o id do serviço
+        where: {id:req.params.id}})
+    .then(clientes=>{
+        return res.json({
+            error: false,
+            clientes
+    })
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message:"Erro: não foi possível se conectar!"
+        });
+    });
+});
+
 app.get('/servico/:id', async(req,res)=>{
     await servico.findByPk(req.params.id)
     .then(serv =>{

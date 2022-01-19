@@ -71,7 +71,7 @@ export const ListarPedidos = () => {
                             <td>{pedidos.ClienteId}</td>
                             <td>{pedidos.data}</td>
                             <td className="text-center/">
-                                <Link to={"/buscarCliente/"+pedidos.id} className="btn btn-outline-info btn-sm">Consultar</Link>
+                                <Link to={"/buscarCliente/"+pedidos.ClienteId} className="btn btn-outline-info btn-sm">Consultar</Link>
                                 <Link to={"/editarPedido/"+pedidos.id} className="btn btn-outline-dark btn-sm">Editar</Link>
                                 <Link to={"/excluirPedido/"+pedidos.id} className="btn btn-outline-danger btn-sm">Excluir</Link>
                             </td>
