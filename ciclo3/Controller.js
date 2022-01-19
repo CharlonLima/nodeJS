@@ -1,13 +1,22 @@
-const express = require('express');
-const cors = require('cors');
+// Depois que instalamos as dependencias, é necessário chama las
+// Para tanto é necessário usar o comando require
 
-const {Sequelize} = require('./models');
+const express = require('express'); //express permite trabalharmos com ROTA
+const cors = require('cors'); // cors funciona como meio campo entre as rotas, é item de seguraça
+const {Sequelize} = require('./models');//sequelize tem relação com as models, para buscar os dados na models
+const models = require('./models');//importa o que está dentro da models
+//./ um ponto significa que está no mesmo nivel, o controller e a model
+//../ dois pontos dois niveis abaixo
 
-const models = require('./models');
+//toda vez que falaramos da aplicação utilizaremos o app
+const app=express(); //diz que a nossa aplicação utiliza o express, ou seja rotas
 
-const app=express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json());//diz que a aplicação utiliza formato json, associado a uma rota por isso usa express
+// O formato json se caracteriza por uma chave abrindo e chave fechando
+// E dentro temos a chave e o dado atribuido a essa chave
+
+
 
 let cliente = models.Cliente;
 let itempedido = models.ItemPedido;
@@ -18,6 +27,7 @@ let compra = models.Compra;
 let itemcompra = models.ItemCompra;
 let produto = models.Produto;
 
+//metodo get serve para exibir algo na tela
 app.get('/', function(req,res){
     res.send('Olá mundo!')
 });
@@ -189,9 +199,19 @@ app.put('/atualizaservico/:id', async(req,res)=>{
 app.get('/pedidos/:id', async(req,res)=>{
     await pedido.findByPk(req.params.id,{include:[{all: true}]})
     .then(ped=>{
+        // ped vem lá do postman
         return res.json({ped});
     });
 });
+
+
+//Igual a de cima mas mais curta
+// app.get('/pedidos/:id', async(req,res)=>{
+//     await pedido.findByPk(req.params.id,{include:[{all: true}]})
+//     .then(clientes=>{
+//         return res.json({clientes});
+//     });
+// });
 
 app.get('/teste/:id', async(req,res)=>{
     await pedido.findByPk(req.params.id, {include:[{all:true}]})
@@ -339,6 +359,34 @@ app.get('/excluirpedido/:id', async(req,res)=>{
         return res.status(400).json({
             error: true,
             message: 'Erro ao excluir o pedido.'
+        });
+    });
+});
+app.get('/excluirItemPedido/:id/excluir', async(req,res)=>{
+    if(!await pedido.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'O pedido não existe!'
+        });
+    };
+    if(!await servico.findByPk(req.body.ServicoId)){
+        return res.status(400).json({
+            error: true,
+            message: 'O serviço não existe!'
+        });
+    };
+    await itempedido.destroy({
+        where: Sequelize.and({PedidoId: req.params.id}, 
+        {ServicoId: req.body.ServicoId})
+    }).then(function(){
+        return res.json({
+            error: false,
+            message: 'O item pedido foi excluído com sucesso!'
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível excluir o item pedido.'
         });
     });
 });

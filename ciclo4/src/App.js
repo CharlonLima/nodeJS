@@ -18,6 +18,9 @@ import { EditarCliente} from './views/Cliente/editCliente';
 import { EditarServico } from './views/Servico/editServico';
 import { ExcluirPedido } from './views/Pedido/excluirPedi';
 import { EditarPedido } from './views/Pedido/editPedido';
+import { BuscarCliente } from './views/Pedido/buscaClient';
+import { ListarItensPedidos } from './views/ItemPedido/ListarItensPed';
+import { CadastrarItemPed } from './views/ItemPedido/cadItemPed';
 
 
 // Um ponto significa que o arquivo está no mesmo nivel, dois pontos significa que
@@ -37,7 +40,9 @@ function App() {
           <Route path="/listar-cliente" component={ListarClientes}/>
           <Route path="/listar-pedido/:id" component={Item}/>
           <Route path="/listar-servico" component={ListarServicos}/>
+          <Route path="/listar-itensped" component={ListarItensPedidos}/>
           <Route path="/cadastrarservico" component={Cadastrar}/>
+          <Route path="/cadastrarItemPed" component={CadastrarItemPed}/>
           <Route path="/CadastrarCliente" component={CadastrarCliente}/>
           <Route path="/cadastrarpedido" component={CadastrarPedido}/>
           <Route path="/excluirServico/:id" component={ExcluirServico}/>
@@ -46,6 +51,7 @@ function App() {
           <Route path="/editarServico/:id" component={EditarServico}/>
           <Route path="/editarPedido/:id" component={EditarPedido}/>
           <Route path="/excluirPedido/:id" component={ExcluirPedido}/>
+          <Route path="/buscarCliente/:id" component={BuscarCliente}/>
         </Switch>
       </Router>
     </div>
