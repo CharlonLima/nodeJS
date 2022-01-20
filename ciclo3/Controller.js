@@ -5,6 +5,7 @@ const express = require('express'); //express permite trabalharmos com ROTA
 const cors = require('cors'); // cors funciona como meio campo entre as rotas, é item de seguraça
 const {Sequelize} = require('./models');//sequelize tem relação com as models, para buscar os dados na models
 const models = require('./models');//importa o que está dentro da models
+const { all } = require('express/lib/application');
 //./ um ponto significa que está no mesmo nivel, o controller e a model
 //../ dois pontos dois niveis abaixo
 
@@ -31,16 +32,21 @@ let produto = models.Produto;
 app.get('/', function(req,res){
     res.send('Olá mundo!')
 });
-
+//async assincrono não exige resposta
 app.post('/clientes', async(req,res)=>{
+    //await irá aguardar a requisição para executar o metodo
     await cliente.create(
+        //req body significa que os dados para criar cliente estão no corpo 
+        //da pagina
         req.body
-    ).then(function(){
+    ).then(cli=>{//then se deu certo ele retorna resposta no formato json
+        //cli é objeto que acabou de ser criado
         return res.json({
             error: false,
-            message: 'O cliente foi cadastrado com sucesso!'
+            message: 'O cliente foi cadastrado com sucesso!',
+            cli //o objeto cli será retornado
         })
-    }).catch(function(erro){
+    }).catch(function(erro){ // catch se der errado retorne uma resposta se status for 400 no formato json
         return res.status(400).json({
             error: true,
             message: "Foi impossível se conectar!"
@@ -64,21 +70,35 @@ app.post('/servicos', async(req,res)=>{
     });
 });
 
-app.post('/pedidos', async(req,res)=>{
-    await pedido.create(
-        req.body
-    ).then(function(){
+app.post('/pedido/:id/cliente', async(req,res)=>{
+    const ped = {
+        data: req.body.data,//no corpo da página só precisa definir a data, o cliente id será capturado do parametro da rota
+        ClienteId: req.params.id
+    };
+    //antes de cria o pedido, precisa vericar se o cliente existe, porque todo pedido deve estar associado a um cliente
+    //se não encontrar cliente com base no id passado no parametro da rota então o cliente não existe
+    if(!await cliente.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Cliente não existe!'
+        });
+    };
+    //vai cria o pedido com base nas chaves e os dados atribuido a elas que estão na variavel ped
+    await pedido.create(ped)
+    .then(pedCli=>{
         return res.json({
             error: false,
-            message: 'O pedido foi efetuado com sucesso!'
-        })
-    }).catch(function(erro){
+            message: 'O pedido foi efetuado com sucesso!',
+            pedCli
+        });
+    }).catch(erro=>{
         return res.status(400).json({
             error: true,
             message: 'Foi impossível se conectar!'
-        })
+        });
     });
 });
+
 
 app.post('/itempedidos', async(req,res)=>{
     await itempedido.create(
@@ -108,8 +128,16 @@ app.get('/listaservicos', async(req,res)=>{
 app.get('/listaclientes', async(req,res)=>{
     await cliente.findAll({
         order: [['clienteDesde', 'ASC']]
-    }).then(function(clientes){
-        res.json({clientes})
+    }).then(clientes=>{
+        return res.json({
+            error: false,
+            clientes
+        });
+    }).catch((erro)=>{
+        return res.status(400).json({
+            error: true,
+            message: 'Erro de conexão'
+        });
     });
 });
 
@@ -129,21 +157,38 @@ app.get('/listapedidos', async(req,res)=>{
     });
 });
 
-app.get('/ofertaservicos', async(req,res)=>{
-    await servico.count('id').then(function(servicos){
-        res.json({servicos});
+//Exibe todos os clientes com tudo o que ele se relaciona
+app.get('/clientes-pedidos', async(req,res)=>{
+    await cliente.findAll({include: [{all: true}]})
+    .then(clientes=>{
+        return res.json({
+            error: false,
+            clientes
+        });
+    }).catch((erro)=>{
+        return res.status(400).json({
+            error: true,
+            message: 'Erro de conexão'
+        });
     });
 });
 
-app.get('/qtdcliente', async(req,res)=>{
-    await cliente.count('id').then(function(clientes){
-        res.json({clientes});
-    });
-});
-
-app.get('/qtdpedido', async(req,res)=>{
-    await pedido.count('id').then(function(pedidos){
-        res.json({pedidos});
+//Exibir todos os pedidos de um cliente
+app.get('/cliente/:id/pedidos', async(req,res)=>{
+    await pedido.findAll({
+        //Where é uma regra, retorne todos os pedidos de um cliente
+        //Se o cliente id for igual ao passado no parametro
+        where: {ClienteId: req.params.id}
+    }).then(pedidos=>{
+        return res.json({
+            error: false,
+            pedidos
+        });
+    }).catch(erro=>{
+        return res.status(400).json({
+            error: true,
+            message: 'Erro de conexão'
+        });
     });
 });
 
@@ -167,6 +212,38 @@ app.get('/cliente/:id', async(req,res)=>{
     });
 });
 
+//aula 13
+
+app.get('/listaclientes', async(req,res)=>{
+    await cliente.findAll({
+        raw: true
+    }).then(function(clientes){
+        res.json({clientes})
+    });
+});
+
+//aula 5 de react
+
+app.get('/servico/:id/pedidos', async(req,res)=>{
+    await itempedido.findAll({
+        //where é uma condição que significa que o ServicoId
+        //tem que ser igual ao id passado no parametro da rota
+        //Se a condição for verdade então ele retorna todos os
+        //pedidos que tenha o id do serviço
+        where: {ServicoId:req.params.id}})
+    .then(item =>{
+        return res.json({
+            error: false,
+            item
+        });
+    }).catch(function(erro){
+        return res.status(400).json({
+            error: true,
+            message: "Erro: não foi possível se conectar!"
+        });
+    });
+});
+
 app.get('/servico/:id', async(req,res)=>{
     await servico.findByPk(req.params.id)
     .then(serv =>{
@@ -182,38 +259,20 @@ app.get('/servico/:id', async(req,res)=>{
     });
 });
 
-// app.put('/atualizaservico', async(req,res)=>{
-//         await servico.update(req.body,{
-//             where:{id: req.body.id}
-//         }).then(function(){
-//             return res.json({
-//                 error: false,
-//                 message: "Serviço foi alterado com sucesso!"
-//             })
-//         }).catch(function(erro){
-//             res.status(400).json({
-//                 error: true,
-//                 message: "Erro na alteração do serviço."
-//         });
-//     });
-// });
-
-app.put('/atualizaservico/:id', async(req,res)=>{
-    await servico.update(req.body,{
-        where:{id: req.params.id}})
-        .then(function(){
+app.get('/pedidos/:id', async(req,res)=>{
+    await pedido.findByPk(req.params.id)
+    .then(pedi =>{
         return res.json({
-                error: false,
-                message: "Serviço foi alterado com sucesso!"
-            })
-        }).catch(function(erro){
-            res.status(400).json({
-                error: true,
-                message: "Erro na alteração do serviço."
+            error: false,
+            pedi
+        });
+    }).catch(erro=>{
+        return res.status(400).json({
+            error: true,
+            message: 'Erro: não foi possivel se conectar!'
         });
     });
 });
-
 
 //aula12
 app.get('/pedidos/:id', async(req,res)=>{
@@ -242,6 +301,56 @@ app.get('/infoclientes', async(req,res)=>{
     await pedido.findByPk(req.body.id,{include:[{all:true}]})
     .then(ser=>{
         return res.json({ser});
+    });
+});
+
+app.get('/ofertaservicos', async(req,res)=>{
+    await servico.count('id').then(function(servicos){
+        res.json({servicos});
+    });
+});
+
+app.get('/qtdcliente', async(req,res)=>{
+    await cliente.count('id').then(function(clientes){
+        res.json({clientes});
+    });
+});
+
+app.get('/qtdpedido', async(req,res)=>{
+    await pedido.count('id').then(function(pedidos){
+        res.json({pedidos});
+    });
+});
+
+// app.put('/atualizaservico', async(req,res)=>{
+//         await servico.update(req.body,{
+//             where:{id: req.body.id} //a condição where é passado no corpo da pagian
+//         }).then(function(){
+//             return res.json({
+//                 error: false,
+//                 message: "Serviço foi alterado com sucesso!"
+//             })
+//         }).catch(function(erro){
+//             res.status(400).json({
+//                 error: true,
+//                 message: "Erro na alteração do serviço."
+//         });
+//     });
+// });
+
+app.put('/atualizaservico/:id', async(req,res)=>{
+    await servico.update(req.body,{
+        where:{id: req.params.id}}) // a condição é passada no parametro rota
+        .then(function(){
+        return res.json({
+                error: false,
+                message: "Serviço foi alterado com sucesso!"
+            })
+        }).catch(function(erro){
+            res.status(400).json({
+                error: true,
+                message: "Erro na alteração do serviço."
+        });
     });
 });
 
@@ -301,7 +410,7 @@ app.put('/clientes/:id/editarcliente', async(req,res)=>{
         });
     });
 });
-
+//Atualizar o pedido me
 app.put('/pedidos/:id/editarpedido', async(req,res)=>{
     if(!await pedido.findByPk(req.params.id)){
         return res.status(400).json({
@@ -324,17 +433,43 @@ app.put('/pedidos/:id/editarpedido', async(req,res)=>{
         });
     });
 });
+//Atualizar o pedido com base no id prof
+app.put('/pedido/:id/atualizar', async(req,res)=>{
+    const pedi = {
+        id: req.params.id,
+        ClienteId: req.body.ClienteId,
+        data: req.body.data
+    };
+    if(!await cliente.findByPk(req.body.ClienteId)){
+        return res.status(400).json({
+            error: true,
+            message: 'Cliente não existe!'
+        });
+    };
 
-//aula 13
-
-app.get('/listaclientes', async(req,res)=>{
-    await cliente.findAll({
-        raw: true
-    }).then(function(clientes){
-        res.json({clientes})
+    await pedido.update(pedi, {
+        //Toda vez que tem chave estrangeira e vai realizar
+        //alteração, exclusão é necessário fazer essa comparação
+        //Vai a fazer duas comparações então usa sequelize.and
+        //Vai comparar se o clienteId do pedido é igual ao passado no corpo da pagina
+        // e também vai comparar se id do pedido é igual do id passado no parametro
+        where: Sequelize.and({ClienteId: req.body.ClienteId},
+        {id:req.params.id})
+    }).then(pedidos=>{
+        return res.json({
+            error: false,
+            message: 'Pedido alterado com sucesso!',
+            pedidos
+        });
+    }).catch(erro=>{
+        return res.status(400).json({
+            error: true,
+            message: 'Não foi possível alterar o pedido'
+        });
     });
 });
 
+//aula 13
 app.get('/excluircliente/:id', async(req,res)=>{
     await cliente.destroy({
         where: {id: req.params.id}
@@ -410,29 +545,6 @@ app.get('/excluirItemPedido/:id/excluir', async(req,res)=>{
         });
     });
 });
-
-//aula 5 de react
-
-app.get('/servico/:id/pedidos', async(req,res)=>{
-    await itempedido.findAll({
-        //where é uma condição que significa que o ServicoId
-        //tem que ser igual ao id passado no parametro da rota
-        //Se a condição for verdade então ele retorna todos os
-        //pedidos que tenha o id do serviço
-        where: {ServicoId:req.params.id}})
-    .then(item =>{
-        return res.json({
-            error: false,
-            item
-        });
-    }).catch(function(erro){
-        return res.status(400).json({
-            error: true,
-            message: "Erro: não foi possível se conectar!"
-        });
-    });
-});
-
 
 //DESAFIO NODE JS
 
