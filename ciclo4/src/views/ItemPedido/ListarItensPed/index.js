@@ -71,6 +71,10 @@ export const ListarItensPedidos = () => {
                             <td>{itemspedidos.ServicoId}</td>
                             <td>{itemspedidos.quantidade}</td>
                             <td>{itemspedidos.valor}</td>
+                            <td className="text-center/">
+                                <Link to={"/editItemPed/"+itemspedidos.PedidoId+"/editar/"+itemspedidos.ServicoId} className="btn btn-outline-dark btn-sm">Editar</Link>
+                                <Link to={"/excluirItemPedido/"+itemspedidos.PedidoId+"/excluir/"+itemspedidos.ServicoId} className="btn btn-outline-danger btn-sm">Excluir</Link>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

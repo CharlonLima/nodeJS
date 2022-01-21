@@ -21,6 +21,9 @@ import { EditarPedido } from './views/Pedido/editPedido';
 import { BuscarCliente } from './views/Pedido/buscaClient';
 import { ListarItensPedidos } from './views/ItemPedido/ListarItensPed';
 import { CadastrarItemPed } from './views/ItemPedido/cadItemPed';
+import { BuscarPedCli } from './views/Cliente/buscPedCli';
+import { ExcluirItemPed } from './views/ItemPedido/excluItemPed';
+import { EditarItem } from './views/ItemPedido/editarItem';
 
 
 // Um ponto significa que o arquivo está no mesmo nivel, dois pontos significa que
@@ -50,8 +53,11 @@ function App() {
           <Route path="/editarCliente/:id" component={EditarCliente}/>
           <Route path="/editarServico/:id" component={EditarServico}/>
           <Route path="/editarPedido/:id" component={EditarPedido}/>
+          <Route path="/editItemPed/:id/editar/:idd" component={EditarItem}/>
           <Route path="/excluirPedido/:id" component={ExcluirPedido}/>
+          <Route path="/excluirItemPedido/:id/excluir/:idd" component={ExcluirItemPed}/>
           <Route path="/buscarCliente/:id" component={BuscarCliente}/>
+          <Route path="/buscPedClient/:id" component={BuscarPedCli}/>
         </Switch>
       </Router>
     </div>

@@ -173,6 +173,21 @@ app.get('/clientes-pedidos', async(req,res)=>{
     });
 });
 
+app.get('/ItemPedidos', async(req,res)=>{
+    await itempedido.findAll({include:[{all:true}]})
+    .then(item=>{
+        return res.json({
+            error: false,
+            item
+        })
+    }).catch(erro=>{
+        return res.status(400).json({
+            error:true,
+            message: "Erro de conexão"
+        })
+    })
+})
+
 //Exibir todos os pedidos de um cliente
 app.get('/cliente/:id/pedidos', async(req,res)=>{
     await pedido.findAll({
@@ -354,7 +369,41 @@ app.put('/atualizaservico/:id', async(req,res)=>{
     });
 });
 
-app.put('/pedidos/:id/editaritem', async(req,res)=>{
+// app.put('/pedidos/:id/editaritem', async(req,res)=>{
+//     const item={
+//         quantidade: req.body.quantidade,
+//         valor: req.body.valor
+//     };//! significa não se não encontrar id
+//     if(!await pedido.findByPk(req.params.id)){
+//         return res.status(400).json({//params captura do link
+//             error: true,
+//             message: 'Pedido não foi encontrado.'
+//         });
+//     };                          //captura do corpo da requisiçao
+//     if(!await servico.findByPk(req.body.ServicoId)){
+//         return res.status(400).json({
+//             error: true,
+//             message: 'Serviço não foi encontrado.'
+//         })
+//     };
+//     await itempedido.update(item,{
+//         where: Sequelize.and({ServicoId:req.body.ServicoId},
+//             {PedidoId:req.params.id})
+//     }).then(function(itens){
+//         return res.json({
+//             error: false,
+//             message: 'Pedido alterado com sucesso!',
+//             itens
+//         });
+//     }).catch(function(erro){
+//         return res.status(400).json({
+//             error: true,
+//             message: 'Não foi possível alterar.'
+//         });
+//     });
+// });
+
+app.put('/pedidos/:id/editaritem/:idd', async(req,res)=>{
     const item={
         quantidade: req.body.quantidade,
         valor: req.body.valor
@@ -365,15 +414,15 @@ app.put('/pedidos/:id/editaritem', async(req,res)=>{
             message: 'Pedido não foi encontrado.'
         });
     };                          //captura do corpo da requisiçao
-    if(!await servico.findByPk(req.body.ServicoId)){
+    if(!await servico.findByPk(req.params.idd)){
         return res.status(400).json({
             error: true,
             message: 'Serviço não foi encontrado.'
         })
     };
     await itempedido.update(item,{
-        where: Sequelize.and({ServicoId:req.body.ServicoId},
-            {PedidoId:req.params.id})
+        where: Sequelize.and({PedidoId:req.params.id},
+            {ServicoId:req.params.idd})
     }).then(function(itens){
         return res.json({
             error: false,
@@ -517,14 +566,14 @@ app.get('/excluirpedido/:id', async(req,res)=>{
         });
     });
 });
-app.get('/excluirItemPedido/:id/excluir', async(req,res)=>{
+app.get('/excluirItemPedido/:id/excluir/:idd', async(req,res)=>{
     if(!await pedido.findByPk(req.params.id)){
         return res.status(400).json({
             error: true,
             message: 'O pedido não existe!'
         });
     };
-    if(!await servico.findByPk(req.body.ServicoId)){
+    if(!await servico.findByPk(req.params.idd)){
         return res.status(400).json({
             error: true,
             message: 'O serviço não existe!'
@@ -532,7 +581,7 @@ app.get('/excluirItemPedido/:id/excluir', async(req,res)=>{
     };
     await itempedido.destroy({
         where: Sequelize.and({PedidoId: req.params.id}, 
-        {ServicoId: req.body.ServicoId})
+        {ServicoId: req.params.idd})
     }).then(function(){
         return res.json({
             error: false,
@@ -564,19 +613,29 @@ app.post('/produtos', async(req,res)=>{
     });
 });
 
-app.post('/compras', async(req,res)=>{
-    await compra.create(
-        req.body
-    ).then(function(){
+app.post('/compras/:id/cliente', async(req,res)=>{
+    const com = {
+        ClienteId: req.params.id,
+        data: req.body.data
+    };
+    if(!await cliente.findByPk(req.params.id)){
+        return res.status(400).json({
+            error: true,
+            message: 'Cliente não existe'
+        });
+    };
+    await compra.create(com)
+    .then(function(compr){
         return res.json({
             error: false,
-            message: 'A compra foi realizada com sucesso!'
-        })
+            message: 'A compra foi realizada com sucesso!',
+            compr
+        });
     }).catch(function(erro){
         return res.status(400).json({
             error: true,
             message: 'Foi impossível se conectar!'
-        })
+        });
     });
 });
 
@@ -678,6 +737,22 @@ app.get('/listarProdutos', async(req,res)=>{
         order: [['id', 'ASC']]
     }).then(function(produtos){
         res.json({produtos})
+    });
+});
+
+app.get('/cliente/:id/compras', async(req,res)=>{
+    await compra.findAll({
+        where: {ClienteId: req.params.id}
+    }).then(comp=>{
+        return res.json({
+            error: false,
+            comp
+        });
+    }).catch(erro=>{
+        return res.status(400).json({
+            error: true,
+            message: 'Erro de conexão'
+        });
     });
 });
 

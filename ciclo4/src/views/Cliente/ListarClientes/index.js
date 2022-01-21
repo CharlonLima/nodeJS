@@ -81,7 +81,7 @@ export const ListarClientes = () => {
                             <td>{clientes.clienteDesde}</td>
                             <td className="text-center/">
                                 {/* vai mandar para a rota que está em app.js junto com o id do serviço */}
-                                <Link to={""}
+                                <Link to={"/buscPedClient/"+clientes.id}
                                     className="btn btn-outline-primary btn-sm">Consultar</Link>
                                 <Link to={"/editarCliente/"+clientes.id} className="btn btn-outline-dark btn-sm">Editar</Link>
                                 <Link to={"/excluirCliente/"+clientes.id} className="btn btn-outline-danger btn-sm">Excluir</Link>
