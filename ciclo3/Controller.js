@@ -604,12 +604,12 @@ app.post('/produtos', async(req,res)=>{
         return res.json({
             error: false,
             message: 'O produto foi criado com sucesso!'
-        })
+        });
     }).catch(function(erro){
         return res.status(400).json({
             error: true,
             message: 'Não foi possível se conectar.'
-        })
+        });
     });
 });
 

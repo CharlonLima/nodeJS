@@ -1,9 +1,24 @@
 import { Container } from "reactstrap";
 
 export const Home = () => {
+
+    //Em react não usa hífen para separar as palavras, usa camelcase. Em vez de font-size usa fontSize
+    //É possível definir o estilo de várias maneiras
+    //A primeira é inline dentro do código <main style={{color:'#f00'}}></main> ATENÇÃO A COR DEVE SER DEFINIDA EM #HEXADECIMAL
+    //A segunda forma é criando um objeto com a formatação desejada e aplicar na tag exemplo <footer style={formatacao}>Desde 2010 facilitando a rotina de seus clientes</footer>
+    // const formatacao = {
+    //     color: 'red',
+    //     fontSize: '2em',
+    //     fontFamily: 'verdana'
+    // }
+    //E a terceira é através do arquivo CSS. Mas é necessário que importe o arquivo css
+    //No app.js. No arquivo css pode usar o hifen para separa as palavras. E quando for aplicar a classe
+    // na tag utiliza o className
+
     return (
-        <div>
-            <Container>
+        <div className="elementoPai">
+            <header className="cabecalho">
+                <Container>
                 <div className="d-flex">
                     <div className="m-auto p-2">
                         <h1>Home</h1>
@@ -24,6 +39,15 @@ export const Home = () => {
                     </div>
                 </div>
             </Container>
+            </header>
+            {/* <main style={{color:'#304FFE'}}>O melhor prestador de serviços do Brasil</main>
+            <footer style={formatacao}>Desde 2010 facilitando a rotina de seus clientes</footer> */}
+            <main className="principal">
+                O melhor prestador de serviços do Brasil
+                <a href="https://www.youtube.com/cfbcursos" target='_blank'>Vá para canal CFB Cursos</a>
+            </main>
+            <footer className="rodape">Desde 2010 facilitando a rotina de seus clientes</footer>
+            
         </div>
     );
 };
