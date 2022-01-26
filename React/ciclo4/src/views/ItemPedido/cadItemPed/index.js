@@ -8,7 +8,7 @@ import { api } from "../../../config";
 export const CadastrarItemPed = () => {
     // objeto que recebe os dados, a variavel serviço recebe os dados e a variavel setServico
     // altera os dados
-    const [itempedido, setitempedido] = useState({
+    const [itempedido, setItempedido] = useState({
         PedidoId: '',
         ServicoId: '',
         quantidade: '',
@@ -21,7 +21,7 @@ export const CadastrarItemPed = () => {
         message: ''
     });
 
-    const valorInput = e => setitempedido({
+    const valorInput = e => setItempedido({
         // o servico vai ser composto pelo nome do campo e pelo valor do campo
         ...itempedido, [e.target.name]: e.target.value
     });

@@ -697,21 +697,6 @@ app.post('/itemcompras', async(req,res)=>{
     });
 });
 
-// app.get('/servico/:id', async(req,res)=>{
-//     await servico.findByPk(req.params.id)
-//     .then(serv =>{
-//         return res.json({
-//             error: false,
-//             serv
-//         });
-//     }).catch(function(erro){
-//         return res.status(400).json({
-//             error: true,
-//             message: "Erro: não foi possível se conectar!"
-//         });
-//     });
-// });
-
 app.get('/compras/:id/produtos', async(req,res)=>{
     await itemcompra.findAll({
         //where é uma condição que significa que o ServicoId
@@ -789,13 +774,6 @@ app.get('/consultar1produto/:id', async(req,res)=>{
         });
     });
 });
-
-// app.get('/pedidos/:id', async(req,res)=>{
-//     await pedido.findByPk(req.params.id,{include:[{all: true}]})
-//     .then(ped=>{
-//         return res.json({ped});
-//     });
-// });
 
 app.get('/consultarCompra/:id', async(req,res)=>{
     if(!await compra.findByPk(req.params.id)){

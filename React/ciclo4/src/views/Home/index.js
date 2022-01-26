@@ -52,7 +52,7 @@ export const Home = () => {
                         <a href="/listar-produtos" className="btn btn-outline-primary btn-sm">Listar Produtos</a>
                     </div>
                     <div className="p-2">
-                            <a href="/listar-itensCompra" className="btn btn-outline-primary btn-sm">Listar Itens Comprados</a>
+                        <a href="/listar-itensCompra" className="btn btn-outline-primary btn-sm">Listar Itens Comprados</a>
                     </div>
                 </div>
             </main>

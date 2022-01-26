@@ -49,7 +49,10 @@ export const CadastrarCompra = () => {
                     });
                 }
             }).catch(() => {
-                console.log("Erro: sem conexão com a API.");
+                setStatus({
+                    type: 'error',
+                    message: 'Erro! A compra não foi cadastrada! Possíveis causas: O Cliente não existe OU Não há conexão com a API.'
+                });
             });
 
     }

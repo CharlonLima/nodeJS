@@ -51,7 +51,10 @@ export const CadastrarItemCompra = () => {
                     });
                 }
             }).catch(() => {
-                console.log("Erro: sem conexão com a API.");
+               setStatus({
+                   type: 'error',
+                   message: 'Erro! Item Compra não foi cadastrado. Possíveis causas: O Produto e/ou a compra não existem ou não há conexão com a API!'
+               })
             });
 
     }
